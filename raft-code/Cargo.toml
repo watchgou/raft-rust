@@ -10,8 +10,10 @@ build = "build.rs"
 
 [dependencies]
 protobuf = { version = "3.4.0" }
-bytes = "1.6.0"
 log = { workspace = true }
+bytes = { workspace = true }
+tokio-util = { workspace = true }
+tokio = { workspace = true }
 
 
 [build-dependencies]
