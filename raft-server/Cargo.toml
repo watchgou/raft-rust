@@ -9,3 +9,7 @@ edition.workspace = true
 raft-code = { version = "0.1.0", path = "../raft-code" }
 raft-common = { version = "0.1.0", path = "../raft-common" }
 log = { workspace = true }
+
+
+[dev-dependencies]
+env_logger = "0.11.3"
