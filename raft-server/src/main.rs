@@ -1,3 +1,6 @@
+use raft_code::protos;
+
 fn main() {
-    println!("Hello, world!");
+    let he = protos::hello::HotWordRequest::default();
+    println!("{:?}", he);
 }
