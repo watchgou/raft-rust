@@ -241,6 +241,7 @@ dependencies = [
 name = "raft-client"
 version = "0.1.0"
 dependencies = [
+ "log",
  "raft-code",
 ]
 
@@ -249,6 +250,7 @@ name = "raft-code"
 version = "0.1.0"
 dependencies = [
  "bytes",
+ "log",
  "protobuf",
  "protobuf-codegen",
  "protoc-bin-vendored",
@@ -257,12 +259,17 @@ dependencies = [
 [[package]]
 name = "raft-common"
 version = "0.1.0"
+dependencies = [
+ "log",
+]
 
 [[package]]
 name = "raft-server"
 version = "0.1.0"
 dependencies = [
+ "log",
  "raft-code",
+ "raft-common",
 ]
 
 [[package]]

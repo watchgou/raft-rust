@@ -3,3 +3,6 @@ members = ["raft-client", "raft-code", "raft-common", "raft-server"]
 [workspace.package]
 version = "0.1.0"
 edition = "2021"
+
+[workspace.dependencies]
+log = "0.4.21"
