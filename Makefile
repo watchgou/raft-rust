@@ -1,2 +1,2 @@
 push:
-    git push -u origin mai
+    git push -u origin main
