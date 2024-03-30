@@ -1,0 +1,3 @@
+/target
+/raft-code/src/protos/*
+!/raft-code/src/protos/*.proto

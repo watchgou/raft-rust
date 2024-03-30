@@ -1,0 +1,2 @@
+[workspace]
+members = ["raft-client", "raft-code", "raft-server"]
