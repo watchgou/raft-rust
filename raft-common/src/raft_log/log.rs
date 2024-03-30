@@ -1,5 +1,6 @@
 use heed::{self, Env, EnvOpenOptions};
-use std::{env, fs, path::Path};
+use log::info;
+use std::{fs, path::Path};
 
 #[derive(Default, Clone, Copy)]
 struct LogEntity {}
@@ -12,15 +13,16 @@ pub struct LogModule {
 }
 
 impl LogModule {
-    pub fn new(path: &str) -> Self {
-        let path = if path.is_empty() { "raft_log" } else { path };
-
+    pub fn new(path: Option<&str>) -> Self {
+        let path = match path {
+            Some(path) => path,
+            None => "raft_log",
+        };
         fs::create_dir_all(Path::new(path)).unwrap();
-
         let env = EnvOpenOptions::new().open(Path::new(path)).unwrap();
-
+        info!("raft log path: {:?}", env.path());
         Self {
-            env: env,
+            env,
             entity: LogEntity::default(),
         }
     }
@@ -32,12 +34,11 @@ impl LogModule {
 
 #[cfg(test)]
 mod raft_log_test {
-    use super::*;
 
     #[test]
     fn test_log() {
         env_logger::init();
-        match env::current_dir() {
+        match std::env::current_dir() {
             Ok(path) => {
                 log::info!("absolute path {:?}", path);
             }

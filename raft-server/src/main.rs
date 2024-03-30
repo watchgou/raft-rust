@@ -1,4 +1,8 @@
+use raft_common::raft_log;
+
 fn main() {
+    let _module = raft_log::log::LogModule::new(None);
+
     println!("hello world");
 }
 
