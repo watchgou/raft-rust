@@ -7,3 +7,7 @@ edition.workspace = true
 
 [dependencies]
 log = { workspace = true }
+heed = { workspace = true }
+
+[dev-dependencies]
+env_logger = "0.11.3"
