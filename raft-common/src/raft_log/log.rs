@@ -37,7 +37,7 @@ mod raft_log_test {
 
     #[test]
     fn test_log() {
-        env_logger::init();
+        //env_logger::init();
         match std::env::current_dir() {
             Ok(path) => {
                 log::info!("absolute path {:?}", path);
