@@ -1,4 +1,8 @@
-use heed::{self, Env, EnvOpenOptions};
+use heed::{
+    self,
+    types::{OwnedType, Str},
+    Database, Env, EnvOpenOptions,
+};
 use log::info;
 use std::{fs, path::Path};
 
@@ -26,8 +30,12 @@ impl LogModule {
             entity: LogEntity::default(),
         }
     }
-
-    pub fn wirte(&self) {}
+    // leaderId
+    pub fn wirte(&self, leader_id: i32) {
+        let databases: Database<OwnedType<i32>, Str> = self.env.create_database(None).unwrap();
+        let mut wtxn = self.env.write_txn().unwrap();
+        let _ = databases.put(&mut wtxn, &leader_id, "");
+    }
 
     pub fn read(&self) {}
 }
