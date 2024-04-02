@@ -46,6 +46,6 @@ mod test_load {
     #[test]
     fn test_load_configuration() {
         let mut yaml = String::new();
-        let _read: RaftConfig = C::read("path", &mut yaml);
+        let _read: RaftConfig = C::parse("path", &mut yaml);
     }
 }
