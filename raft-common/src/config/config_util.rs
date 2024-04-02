@@ -5,13 +5,13 @@ use serde::Deserialize;
 pub struct C;
 
 pub trait ParseConfig<'d, T> {
-    fn read(path: &str, yaml: &'d mut String) -> T
+    fn parse(path: &str, yaml: &'d mut String) -> T
     where
         T: Deserialize<'d> + Default;
 }
 
 impl<'d, T> ParseConfig<'d, T> for C {
-    fn read(path: &str, yaml: &'d mut String) -> T
+    fn parse(path: &str, yaml: &'d mut String) -> T
     where
         T: Deserialize<'d> + Default,
     {
