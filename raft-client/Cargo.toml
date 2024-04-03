@@ -6,4 +6,5 @@ edition.workspace = true
 
 [dependencies]
 raft-code = { version = "0.1.0", path = "../raft-code" }
+raft-common = { version = "0.1.0", path = "../raft-common" }
 log = { workspace = true }

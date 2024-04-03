@@ -5,7 +5,7 @@ use raft_common::raft_log;
 fn main() {
     let _module = raft_log::log::LogModule::new(None);
     let mut yaml = String::new();
-    let conf: config::config_util::RaftConfig = config::config_util::C::parse(
+    let conf: raft_common::RaftConfig = config::config_util::C::parse(
         "/Users/jon/workspace/rust/raft-rust/raft_config.yaml",
         &mut yaml,
     );

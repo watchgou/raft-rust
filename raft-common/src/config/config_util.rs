@@ -30,18 +30,11 @@ impl<'d, T> ParseConfig<'d, T> for C {
     }
 }
 
-#[derive(Default, Deserialize, Debug)]
-pub struct RaftConfig {
-    pub master: Option<String>,
-    pub slaver: Option<Vec<String>>,
-    pub raft_log_path: Option<String>,
-}
-
 #[cfg(test)]
 mod test_load {
     use super::ParseConfig;
-    use crate::config::config_util::RaftConfig;
     use crate::config::config_util::C;
+    use crate::RaftConfig;
 
     #[test]
     fn test_load_configuration() {
