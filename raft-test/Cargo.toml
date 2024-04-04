@@ -1,9 +1,8 @@
 [package]
-name = "raft-server"
+name = "raft-test"
 version.workspace = true
 edition.workspace = true
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 raft-common = { version = "0.1.0", path = "../raft-common" }

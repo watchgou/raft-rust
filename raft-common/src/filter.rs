@@ -1,16 +1,32 @@
 pub trait Filter {
     fn do_filter(&self);
 }
+#[derive(Default)]
+pub struct FilterChain;
 
 type F = Vec<Box<dyn Filter>>;
 
-pub static mut FILTER: F = F::new();
+static mut FILTER: F = F::new();
 
-pub fn add_filter<T>(file: T)
-where
-    T: Filter + 'static,
-{
-    unsafe { FILTER.push(Box::new(file)) };
+impl FilterChain {
+    pub fn init() {
+        unsafe { FILTER.insert(0, Box::new(DefaultFilter::default())) };
+    }
+
+    pub fn add_filter<T>(file: T)
+    where
+        T: Filter + 'static,
+    {
+        unsafe { FILTER.push(Box::new(file)) };
+    }
+}
+#[derive(Default)]
+struct DefaultFilter;
+
+impl Filter for DefaultFilter {
+    fn do_filter(&self) {
+        println!("default filter");
+    }
 }
 
 #[cfg(test)]
@@ -36,8 +52,8 @@ mod test {
     fn test_filet() {
         let m1 = M1;
         let m2 = M2;
-        add_filter(m2);
-        add_filter(m1);
+        FilterChain::add_filter(m2);
+        FilterChain::add_filter(m1);
         unsafe {
             for d in FILTER.iter() {
                 d.do_filter();

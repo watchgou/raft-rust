@@ -2,4 +2,4 @@
 /raft-core/src/protos/*
 !/raft-core/src/protos/*.proto
 /Cargo.lock
-/raft-server/raft_log/*
+/raft-test/raft_log/*
