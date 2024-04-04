@@ -11,16 +11,3 @@ fn main() {
     );
     println!("hello world {:?}, {:?}", conf, yaml);
 }
-
-#[cfg(test)]
-mod test {
-    use env_logger;
-    use log::info;
-    use raft_code::protos;
-    #[test]
-    fn test() {
-        env_logger::init();
-        let hello = protos::hello::HotWordRequest::default();
-        info!("HotWordRequest: {:?}", hello);
-    }
-}
