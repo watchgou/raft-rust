@@ -1,4 +1,10 @@
+use std::fs;
+
 fn main() {
+    let path = "./src/protos";
+    if fs::metadata(path).is_err() {
+        fs::create_dir(path).unwrap();
+    }
     protobuf_codegen::Codegen::new()
         // Use `protoc` parser, optional.
         .protoc()
