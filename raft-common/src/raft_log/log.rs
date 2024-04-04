@@ -28,9 +28,9 @@ pub struct LogModule {
 type MDBase = Database<OwnedType<u32>, Str>;
 
 impl LogModule {
-    pub fn new(path: Option<&str>) -> Self {
+    pub fn new(path: &Option<String>) -> Self {
         let path = match path {
-            Some(path) => path,
+            Some(path) => path.as_str(),
             None => "raft_log",
         };
         fs::create_dir_all(Path::new(path)).unwrap();

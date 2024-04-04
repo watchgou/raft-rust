@@ -1,5 +1,6 @@
 use raft_common::{
     config::config_util::{ParseConfig, C},
+    raft_log::log::LogModule,
     *,
 };
 use serde::Deserialize;
@@ -19,6 +20,7 @@ pub enum State {
 #[derive(Default, Deserialize, Debug)]
 struct RaftConfig {
     cluster: Option<Vec<String>>,
+    host_names: Option<String>,
     raft_log_path: Option<String>,
 }
 
@@ -26,10 +28,12 @@ pub fn start() {
     // load configuration
     //
     let mut yaml = String::new();
-    let _conf: RaftConfig = C::parse(
+    let conf: RaftConfig = C::parse(
         "/Users/jon/workspace/rust/raft-rust/raft_config.yaml",
         &mut yaml,
     );
+
+    let _log = LogModule::new(&conf.raft_log_path);
 
     // 初始化 过滤器
     filter::FilterChain::init();

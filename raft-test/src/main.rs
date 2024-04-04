@@ -13,13 +13,14 @@ mod raft_log_test {
     #[derive(Default, Deserialize, Debug)]
     struct RaftConfig {
         cluster: Option<Vec<String>>,
+        host_names: Option<String>,
         raft_log_path: Option<String>,
     }
 
     #[test]
     fn test_log() {
         env_logger::init();
-        let module = raft_log::log::LogModule::new(None);
+        let module = raft_log::log::LogModule::new(&None);
         let logs = LogEntity {
             index: 1,
             term: 1,

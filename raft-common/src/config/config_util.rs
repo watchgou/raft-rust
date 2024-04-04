@@ -29,16 +29,3 @@ impl<'d, T> ParseConfig<'d, T> for C {
         t
     }
 }
-
-#[cfg(test)]
-mod test_load {
-    use super::ParseConfig;
-    use crate::config::config_util::C;
-    use crate::RaftConfig;
-
-    #[test]
-    fn test_load_configuration() {
-        let mut yaml = String::new();
-        let _read: RaftConfig = C::parse("path", &mut yaml);
-    }
-}
