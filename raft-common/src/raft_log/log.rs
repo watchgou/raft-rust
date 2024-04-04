@@ -31,33 +31,18 @@ impl LogModule {
         }
     }
     // leaderId
-    pub fn wirte(&self, leader_id: i32, json: &str) {
-        let databases: Database<OwnedType<i32>, Str> = self.env.create_database(None).unwrap();
+    pub fn wirte(&self, leader_id: u32, json: &str) {
+        let databases: Database<OwnedType<u32>, Str> = self.env.create_database(None).unwrap();
         let mut wtxn = self.env.write_txn().unwrap();
         let _ = databases.put(&mut wtxn, &leader_id, json);
         wtxn.commit().unwrap();
     }
 
-    pub fn read(&self) {
-        let databases: Database<OwnedType<i32>, Str> = self.env.create_database(None).unwrap();
-        let rtxn = self.env.read_txn().unwrap();
-        for data in databases.iter(&rtxn).unwrap() {
-            match data {
-                Ok(value) => {
-                    println!("{:#?}", value.1);
-                }
-                Err(e) => {
-                    panic!("{:#?}", e);
-                }
-            }
-        }
-    }
-
-    pub fn read_last(&self) -> (i32, &str) {
-        let databases: Database<OwnedType<i32>, Str> = self.env.create_database(None).unwrap();
+    pub fn read_last(&self) -> (u32, String) {
+        let databases: Database<OwnedType<u32>, Str> = self.env.create_database(None).unwrap();
         let rtxn = self.env.read_txn().unwrap();
         let data = databases.last(&rtxn).unwrap().unwrap();
-        data
+        (data.0, data.1.to_string())
     }
 }
 
