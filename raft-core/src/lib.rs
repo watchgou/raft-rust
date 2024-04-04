@@ -1,3 +1,5 @@
+mod code;
+mod protos;
 use raft_common::{
     config::config_util::{ParseConfig, C},
     raft_log::log::LogModule,
