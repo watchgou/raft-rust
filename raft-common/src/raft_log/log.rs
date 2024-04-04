@@ -31,13 +31,29 @@ impl LogModule {
         }
     }
     // leaderId
-    pub fn wirte(&self, leader_id: i32) {
-        let databases: Database<OwnedType<i32>, Str> = self.env.create_database(None).unwrap();
+    pub fn wirte(&self, leader_id: i32, json: &str) {
+        let databases: Database<OwnedType<i32>, Str> =
+            self.env.create_database(Some("raft")).unwrap();
         let mut wtxn = self.env.write_txn().unwrap();
-        let _ = databases.put(&mut wtxn, &leader_id, "");
+        let _ = databases.put(&mut wtxn, &leader_id, json);
+        wtxn.commit().unwrap();
     }
 
-    pub fn read(&self) {}
+    pub fn read(&self) {
+        let databases: Database<OwnedType<i32>, Str> =
+            self.env.create_database(Some("raft")).unwrap();
+        let rtxn = self.env.read_txn().unwrap();
+        for data in databases.iter(&rtxn).unwrap() {
+            match data {
+                Ok(value) => {
+                    println!("{:#?}", value.1);
+                }
+                Err(e) => {
+                    panic!("{:#?}", e);
+                }
+            }
+        }
+    }
 }
 
 #[cfg(test)]
