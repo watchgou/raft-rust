@@ -12,6 +12,7 @@ bytes = { workspace = true }
 tokio-util = { workspace = true }
 tokio = { workspace = true }
 protobuf = { workspace = true }
+serde = { workspace = true }
 raft-common = { version = "0.1.0", path = "../raft-common" }
 
 [build-dependencies]
