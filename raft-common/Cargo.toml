@@ -13,15 +13,3 @@ heed = { workspace = true }
 serde = { workspace = true }
 serde_yaml = { workspace = true }
 log = { workspace = true }
-bytes = { workspace = true }
-tokio-util = { workspace = true }
-tokio = { workspace = true }
-
-[dev-dependencies]
-env_logger = "0.11.3"
-
-
-[build-dependencies]
-#protobuf-build = { version = "0.15.1", default-features = true }
-protobuf-codegen = "3.4.0"
-protoc-bin-vendored = "3.0.0"
