@@ -9,7 +9,7 @@ edition.workspace = true
 bytes = { workspace = true }
 tokio-util = { workspace = true }
 tokio = { workspace = true }
-
+raft-common = { version = "0.1.0", path = "../raft-common" }
 
 [build-dependencies]
 #protobuf-build = { version = "0.15.1", default-features = true }
