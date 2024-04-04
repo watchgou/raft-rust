@@ -1,5 +1,5 @@
 /target
-/raft-code/src/protos/*
-!/raft-code/src/protos/*.proto
+/raft-common/src/protos/*
+!/raft-common/src/protos/*.proto
 /Cargo.lock
 /raft-server/raft_log/*

@@ -1,5 +1,5 @@
 [workspace]
-members = ["raft-client", "raft-code", "raft-common", "raft-core", "raft-server"]
+members = ["raft-client", "raft-common", "raft-core", "raft-server"]
 [workspace.package]
 version = "0.1.0"
 edition = "2021"
