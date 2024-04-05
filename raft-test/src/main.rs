@@ -3,5 +3,5 @@ use raft_core;
 #[tokio::main]
 async fn main() {
     env_logger::init();
-    raft_core::start();
+    let _ = raft_core::start().await;
 }
