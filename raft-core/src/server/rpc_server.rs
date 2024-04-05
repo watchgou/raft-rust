@@ -4,8 +4,9 @@ use tokio::net::TcpStream;
 use tokio::{io::AsyncReadExt, net::TcpListener};
 use tokio_util::codec::Decoder;
 
-use crate::code::RequestVoteDcode;
+use crate::code::VoteDecode;
 use crate::code::MAX_SIZE;
+use crate::protos::election::RequestVote;
 
 pub async fn vote_server(host_name: &String) -> Result<(), Box<dyn std::error::Error>> {
     let listener = TcpListener::bind(host_name).await?;
@@ -25,8 +26,7 @@ pub async fn vote_server(host_name: &String) -> Result<(), Box<dyn std::error::E
 
 //#[inline]
 async fn vote_handle(bytes: &mut BytesMut, stream: &TcpStream) {
-    let mut decode = RequestVoteDcode::default();
-
+    let mut decode = VoteDecode::<RequestVote>::default();
     match decode.decode(bytes) {
         Ok(result) => {
             if let Some(value) = result {
