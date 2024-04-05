@@ -8,14 +8,14 @@ use log::info;
 use serde::{Deserialize, Serialize};
 use std::{fs, path::Path};
 
-#[derive(Debug, Default, Serialize, Deserialize, Builder)]
+#[derive(Debug, Default, Serialize, Deserialize, Builder, Clone)]
 pub struct LogEntity {
     pub index: u32,
     pub term: u32,
     pub command: Option<Command>,
 }
 
-#[derive(Debug, Default, Serialize, Deserialize, Builder)]
+#[derive(Debug, Default, Serialize, Deserialize, Builder, Clone)]
 pub struct Command {
     pub key: String,
     pub value: String,
