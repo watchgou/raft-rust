@@ -15,7 +15,8 @@ protobuf = { workspace = true }
 serde = { workspace = true }
 raft-common = { version = "0.1.0", path = "../raft-common" }
 log = { workspace = true }
-
+rand = { workspace = true }
+derive_builder = { workspace = true }
 
 [build-dependencies]
 #protobuf-build = { version = "0.15.1", default-features = true }

@@ -24,7 +24,7 @@ pub(crate) async fn run(
             match stream {
                 Ok(mut stream) => {
                     encode.encode(heart.clone(), &mut write_buf)?;
-                    stream.write_all(&write_buf).await?;
+                     stream.write_all(&write_buf).await?;
                     stream.read_buf(&mut read_buf).await?;
                     heartbeat_result_handle(&mut read_buf, &mut decode).await?;
                     read_buf.clear();
