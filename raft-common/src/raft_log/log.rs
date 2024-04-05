@@ -1,3 +1,4 @@
+use derive_builder::Builder;
 use heed::{
     self,
     types::{OwnedType, Str},
@@ -7,14 +8,14 @@ use log::info;
 use serde::{Deserialize, Serialize};
 use std::{fs, path::Path};
 
-#[derive(Debug, Default, Serialize, Deserialize)]
+#[derive(Debug, Default, Serialize, Deserialize, Builder)]
 pub struct LogEntity {
     pub index: u32,
     pub term: u32,
     pub command: Option<Command>,
 }
 
-#[derive(Debug, Default, Serialize, Deserialize)]
+#[derive(Debug, Default, Serialize, Deserialize, Builder)]
 pub struct Command {
     pub key: String,
     pub value: String,

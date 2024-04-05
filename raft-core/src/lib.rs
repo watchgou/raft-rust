@@ -1,3 +1,4 @@
+mod client;
 mod code;
 mod protos;
 mod server;
@@ -12,7 +13,7 @@ use serde::Deserialize;
 pub enum State {
     // 追随者
     #[default]
-    Followers,
+    Follower,
 
     // 领导者
     Leader,
@@ -40,4 +41,12 @@ pub fn start() {
 
     // 初始化 过滤器
     filter::FilterChain::init();
+
+    let data = State::default();
+    match data {
+        State::Follower => {}
+        State::Leader => {}
+        State::Candidate => {}
+        _ => {}
+    }
 }
