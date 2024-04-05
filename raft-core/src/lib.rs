@@ -1,4 +1,3 @@
-mod client;
 mod code;
 mod heartbeat;
 mod protos;
