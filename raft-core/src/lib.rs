@@ -1,5 +1,6 @@
 mod client;
 mod code;
+mod heartbeat;
 mod protos;
 mod server;
 use raft_common::{
@@ -23,12 +24,12 @@ pub enum State {
 }
 #[derive(Default, Deserialize, Debug)]
 struct RaftConfig {
-    cluster: Option<Vec<String>>,
-    host_names: Option<String>,
-    raft_log_path: Option<String>,
+    pub cluster: Option<Vec<String>>,
+    pub host_names: Option<String>,
+    pub raft_log_path: Option<String>,
 }
 
-pub fn start() {
+pub async fn start() {
     // load configuration
     //
     let mut yaml = String::new();
@@ -42,11 +43,19 @@ pub fn start() {
     // 初始化 过滤器
     filter::FilterChain::init();
 
-    let data = State::default();
-    match data {
-        State::Follower => {}
-        State::Leader => {}
-        State::Candidate => {}
-        _ => {}
+    let mut data = State::default();
+    loop {
+        match data {
+            State::Follower => {
+                println!("Follower");
+            }
+            State::Leader => {
+                println!("Leader");
+            }
+            State::Candidate => {
+                println!("Candidate");
+            }
+        }
+        data = State::Leader;
     }
 }

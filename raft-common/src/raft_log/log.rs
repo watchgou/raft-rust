@@ -40,6 +40,7 @@ impl LogModule {
         Self { env }
     }
     // leaderId
+    #[inline]
     pub fn wirte(&self, entity: LogEntity) {
         if let Some(database) = self.data_base() {
             let mut wtxn = self.env.write_txn().unwrap();
@@ -50,6 +51,7 @@ impl LogModule {
         }
     }
 
+    #[inline]
     pub fn read_last(&self) -> (u32, LogEntity) {
         if let Some(database) = self.data_base() {
             let rtxn = self.env.read_txn().unwrap();
@@ -60,6 +62,7 @@ impl LogModule {
         }
     }
 
+    #[inline]
     pub fn exist_index(&self, index: u32) -> bool {
         if let Some(database) = self.data_base() {
             let rtxn = self.env.read_txn().unwrap();
@@ -78,6 +81,7 @@ impl LogModule {
         }
     }
 
+    #[inline]
     pub fn index_size(&self) -> u64 {
         if let Some(database) = self.data_base() {
             let rtxn = self.env.read_txn().unwrap();
@@ -87,7 +91,7 @@ impl LogModule {
             0
         }
     }
-
+    #[deprecated(since = "0.1.0", note = "x")]
     pub fn read(&self) {
         if let Some(database) = self.data_base() {
             let rtxn = self.env.read_txn().unwrap();
@@ -104,6 +108,7 @@ impl LogModule {
         }
     }
 
+    #[inline]
     pub fn delete(&self, index: u32) {
         if let Some(database) = self.data_base() {
             let mut wtxn = self.env.write_txn().unwrap();
@@ -112,6 +117,7 @@ impl LogModule {
         }
     }
 
+    #[inline]
     fn data_base(&self) -> Option<MDBase> {
         let database: Option<MDBase> = match self.env.create_database(None) {
             Ok(database) => Some(database),
