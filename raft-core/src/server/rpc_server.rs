@@ -14,13 +14,15 @@ use crate::RaftConfig;
 
 pub async fn vote_server(conf: &RaftConfig) {
     if let Some(host_name) = &conf.host_names {
+        let mut count: u32 = 0;
         let listener = TcpListener::bind(host_name).await.unwrap();
         loop {
             let accept_timeout = timeout(
                 Duration::from_millis(conf.out_time.unwrap()),
                 listener.accept(),
-            );
-            match accept_timeout.await {
+            )
+            .await;
+            match accept_timeout {
                 Ok(result) => match result {
                     Ok((mut stream, address)) => {
                         tokio::spawn(async move {
@@ -35,8 +37,11 @@ pub async fn vote_server(conf: &RaftConfig) {
                     }
                 },
                 Err(e) => {
-                    log::info!("modify statue :{}", e);
-                    break;
+                    if count > 2 {
+                        break;
+                    }
+                    count += 1;
+                    log::info!("number of retries : {}  {}", count, e);
                 }
             }
         }

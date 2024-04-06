@@ -1,89 +1,29 @@
 mod code;
 mod heartbeat;
 mod protos;
+mod raft;
 mod server;
 
 use std::{thread, time::Duration};
 
-use crate::server::rpc_server::vote_server;
-
 use derive_builder::Builder;
+use raft::{Event, StateMachine};
+
 use raft_common::{
     config::config_util::{ParseConfig, C},
+    filter,
     raft_log::log::LogModule,
-    *,
 };
 use rand::Rng;
 use serde::Deserialize;
+use tokio::sync::mpsc::{self, Receiver};
 
-#[derive(Debug, Default, PartialEq, Eq, Clone, Copy)]
-enum State {
-    #[default]
-    Follower,
-
-    // 领导者
-    Leader,
-
-    // 候选者
-    Candidate,
-}
-
-#[derive(Debug, Default, PartialEq, Eq, Clone, Copy)]
-pub enum Event {
-    #[default]
-    Start,
-    Running,
-    Finished,
-}
-
-#[derive(Default, Deserialize, Debug, Clone, Builder)]
-struct RaftConfig {
+#[derive(Default, Deserialize, Builder, Debug)]
+pub(crate) struct RaftConfig {
     pub cluster: Option<Vec<String>>,
     pub host_names: Option<String>,
     pub raft_log_path: Option<String>,
     pub out_time: Option<u64>,
-}
-
-pub async fn start() -> Result<(), Box<dyn std::error::Error>> {
-    // load configuration
-    //
-    let mut yaml = String::new();
-    let mut conf: RaftConfig = C::parse(
-        "/Users/jon/workspace/rust/raft-rust/raft_config.yaml",
-        &mut yaml,
-    );
-    let _log = LogModule::new(&conf.raft_log_path);
-
-    // 初始化 过滤器
-    filter::FilterChain::init();
-
-    let mut rng = rand::thread_rng();
-    let millis = rng.gen_range(1000..=5000) as u64;
-    conf.out_time(millis);
-
-    let state = State::default();
-
-    state_machine(state, &conf).await;
-
-    Ok(())
-}
-
-struct StateMachine {
-    state: State,
-}
-
-async fn state_machine(state: State, conf: &RaftConfig) {
-    match state {
-        State::Follower => {
-            let _ = vote_server(conf);
-            Box::pin(state_machine(State::Candidate, &conf)).await;
-        }
-        State::Leader => {}
-        State::Candidate => {
-            log::info!("Candidate");
-            thread::sleep(Duration::from_millis(10000));
-        }
-    }
 }
 
 impl RaftConfig {
@@ -95,5 +35,34 @@ impl RaftConfig {
 
     fn out_time(&mut self, millis: u64) {
         self.out_time = Some(millis);
+    }
+}
+
+pub async fn start() -> Result<(), Box<dyn std::error::Error>> {
+    let mut yaml = String::new();
+    let mut conf: RaftConfig = C::parse(
+        "/Users/jon/workspace/rust/raft-rust/raft_config.yaml",
+        &mut yaml,
+    );
+    let log = LogModule::new(&conf.raft_log_path);
+    let millis = rand::thread_rng().gen_range(1000..=5000) as u64;
+    conf.out_time(millis);
+    // 初始化 过滤器
+    filter::FilterChain::init();
+    let (tx, rx) = mpsc::channel::<String>(5);
+    tokio::spawn(async_task(rx));
+    let mut state = StateMachine::new(log, &conf, tx);
+    state.handle_event(Event::Init).await;
+
+    Ok(())
+}
+
+async fn async_task(mut rx: Receiver<String>) {
+    let data = rx.recv().await;
+    if let Some(data) = data {
+        loop {
+            log::info!("Async task is running on Tokio's thread pool {:?}", data);
+            thread::sleep(Duration::from_millis(100));
+        }
     }
 }
