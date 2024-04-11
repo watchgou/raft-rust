@@ -18,7 +18,7 @@ use rand::Rng;
 use serde::Deserialize;
 use tokio::sync::mpsc::{self, Receiver};
 
-#[derive(Default, Deserialize, Builder, Debug)]
+#[derive(Default, Deserialize, Builder, Debug, Clone)]
 pub(crate) struct RaftConfig {
     pub cluster: Option<Vec<String>>,
     pub host_names: Option<String>,
@@ -45,15 +45,18 @@ pub async fn start() -> Result<(), Box<dyn std::error::Error>> {
         &mut yaml,
     );
     let log = LogModule::new(&conf.raft_log_path);
-    let millis = rand::thread_rng().gen_range(1000..=5000) as u64;
+    let millis = rand::thread_rng().gen_range(20000..=50000) as u64;
     conf.out_time(millis);
     // 初始化 过滤器
     filter::FilterChain::init();
     let (tx, rx) = mpsc::channel::<String>(5);
-    tokio::spawn(async_task(rx));
-    let mut state = StateMachine::new(log, &conf, tx);
-    state.handle_event(Event::Init).await;
 
+    let task = tokio::spawn(async_task(rx));
+    let state_task = tokio::spawn(async move {
+        let mut state = StateMachine::new(log, &conf, tx);
+        state.handle_event(Event::Init).await;
+    });
+    let _ = tokio::join!(task, state_task);
     Ok(())
 }
 
@@ -61,8 +64,8 @@ async fn async_task(mut rx: Receiver<String>) {
     let data = rx.recv().await;
     if let Some(data) = data {
         loop {
-            log::info!("Async task is running on Tokio's thread pool {:?}", data);
-            thread::sleep(Duration::from_millis(100));
+            log::info!("state {:?}", data);
+            thread::sleep(Duration::from_millis(1000));
         }
     }
 }

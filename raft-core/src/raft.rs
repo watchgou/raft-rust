@@ -22,8 +22,9 @@ pub(crate) enum Event {
     Success,
 }
 
+#[derive(Clone)]
 pub(crate) struct StateMachine<'a> {
-    state: State,
+    pub(crate) state: State,
     log: LogModule,
     pub(crate) conf: &'a RaftConfig,
     pub(crate) leader_node: Option<String>,
@@ -31,7 +32,11 @@ pub(crate) struct StateMachine<'a> {
 }
 
 impl<'a> StateMachine<'a> {
-    pub(crate) fn new(log: LogModule, conf: &'a RaftConfig, tx: Sender<String>) -> StateMachine {
+    pub(crate) fn new(
+        log: LogModule,
+        conf: &'a RaftConfig,
+        tx: Sender<String>,
+    ) -> StateMachine<'a> {
         StateMachine {
             state: State::Follower,
             log,
@@ -42,14 +47,16 @@ impl<'a> StateMachine<'a> {
     }
 
     pub(crate) async fn handle_event(&mut self, event: Event) {
-        //self.tx.send("None".to_string()).await.unwrap();
         match (self.state, event) {
             (State::Follower, Event::Init) => {
+                self.tx.send("value".to_string()).await.unwrap();
                 vote_server(&self.conf).await;
                 //self.state = State::StateA;
-                self.tx.send("value".to_string()).await.unwrap();
+                self.state = State::Leader;
+                Box::pin(self.handle_event(Event::Success)).await;
             }
             (State::Leader, Event::Success) => {
+                log::info!("state ");
                 //self.state = State::StateB;
             }
             (State::Candidate, Event::Election) => {

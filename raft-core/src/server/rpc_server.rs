@@ -1,3 +1,4 @@
+use std::sync::atomic::{AtomicU32, Ordering};
 use std::time::Duration;
 
 use bytes::BytesMut;
@@ -14,7 +15,7 @@ use crate::RaftConfig;
 
 pub async fn vote_server(conf: &RaftConfig) {
     if let Some(host_name) = &conf.host_names {
-        let mut count: u32 = 0;
+        let atomic = AtomicU32::new(0);
         let listener = TcpListener::bind(host_name).await.unwrap();
         loop {
             let accept_timeout = timeout(
@@ -33,15 +34,15 @@ pub async fn vote_server(conf: &RaftConfig) {
                         });
                     }
                     Err(e) => {
-                        log::error!(" {}", e);
+                        log::error!("socket error {}", e);
                     }
                 },
                 Err(e) => {
+                    let count = atomic.fetch_add(1, Ordering::SeqCst);
+                    log::info!("number of retries : {}  {}", count, e);
                     if count > 2 {
                         break;
                     }
-                    count += 1;
-                    log::info!("number of retries : {}  {}", count, e);
                 }
             }
         }

@@ -1,7 +1,7 @@
 pub mod decode;
 pub mod encode;
 
-pub static MAX_SIZE: usize = 8 * 1024 * 1024;
+pub const MAX_SIZE: usize = 0x800000;
 
 #[derive(Default)]
 pub struct VoteDecode<T>(T);
