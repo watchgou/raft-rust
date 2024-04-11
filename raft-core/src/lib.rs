@@ -45,7 +45,7 @@ pub async fn start() -> Result<(), Box<dyn std::error::Error>> {
         &mut yaml,
     );
     let log = LogModule::new(&conf.raft_log_path);
-    let millis = rand::thread_rng().gen_range(20000..=50000) as u64;
+    let millis = rand::thread_rng().gen_range(2000..=5000) as u64;
     conf.out_time(millis);
     // 初始化 过滤器
     filter::FilterChain::init();

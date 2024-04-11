@@ -15,7 +15,7 @@ use crate::RaftConfig;
 
 pub async fn vote_server(conf: &RaftConfig) {
     if let Some(host_name) = &conf.host_names {
-        let atomic = AtomicU32::new(0);
+        let atomic = AtomicU32::new(1);
         let listener = TcpListener::bind(host_name).await.unwrap();
         loop {
             let accept_timeout = timeout(
@@ -39,8 +39,9 @@ pub async fn vote_server(conf: &RaftConfig) {
                 },
                 Err(e) => {
                     let count = atomic.fetch_add(1, Ordering::SeqCst);
-                    log::info!("number of retries : {}  {}", count, e);
-                    if count > 2 {
+                    if count <= 3 {
+                        log::info!("number of retries : {}  {}", count, e);
+                    } else {
                         break;
                     }
                 }
