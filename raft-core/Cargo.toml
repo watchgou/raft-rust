@@ -8,15 +8,17 @@ edition.workspace = true
 build = "build.rs"
 
 [dependencies]
+raft-common = { version = "0.1.0", path = "../raft-common" }
 bytes = { workspace = true }
 tokio-util = { workspace = true }
 tokio = { workspace = true }
 protobuf = { workspace = true }
 serde = { workspace = true }
-raft-common = { version = "0.1.0", path = "../raft-common" }
 log = { workspace = true }
 rand = { workspace = true }
 derive_builder = { workspace = true }
+once_cell = { workspace = true }
+
 
 [build-dependencies]
 #protobuf-build = { version = "0.15.1", default-features = true }

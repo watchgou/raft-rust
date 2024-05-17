@@ -1,8 +1,13 @@
+use std::sync::{Arc, Mutex};
+
 use crate::{server::rpc_server::vote_server, RaftConfig};
 
+use once_cell::sync::Lazy;
 use raft_common::raft_log::log::LogModule;
 
 use tokio::sync::mpsc::Sender;
+
+static mut STATE: Lazy<Mutex<State>> = Lazy::new(|| Mutex::new(State::Follower));
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub(crate) enum State {
@@ -47,6 +52,11 @@ impl<'a> StateMachine<'a> {
     }
 
     pub(crate) async fn handle_event(&mut self, event: Event) {
+        unsafe {
+            let mut value = STATE.lock().unwrap();
+            *value = State::Candidate;
+        }
+
         match (self.state, event) {
             (State::Follower, Event::Init) => {
                 self.tx.send("value".to_string()).await.unwrap();
