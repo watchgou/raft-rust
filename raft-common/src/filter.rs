@@ -1,32 +1,46 @@
+use once_cell::sync::Lazy;
 use std::any::Any;
+use std::sync::Mutex;
 
-pub trait Filter {
-    fn do_filter(&self, request: Box<dyn Any>);
+pub trait Filter: Send + Sync {
+    fn accept(&self, request: Box<dyn Any>);
 }
+
 #[derive(Default)]
-pub struct FilterChain;
+pub struct FilterManager;
 
-type F = Vec<Box<dyn Filter>>;
+type F = Lazy<Mutex<Vec<Box<dyn Filter>>>>;
 
-static mut FILTER: F = F::new();
+static FILTER: F = F::new(|| Mutex::new(Vec::new()));
 
-impl FilterChain {
-    pub fn init() {
-        unsafe { FILTER.insert(0, Box::new(DefaultFilter::default())) };
-    }
-
+impl FilterManager {
     pub fn add_filter<T>(file: T)
     where
         T: Filter + 'static,
     {
-        unsafe { FILTER.push(Box::new(file)) };
-    }
-}
-#[derive(Default)]
-struct DefaultFilter;
+        let mut filters = FILTER.lock().unwrap();
 
-impl Filter for DefaultFilter {
-    fn do_filter(&self, _: Box<dyn Any>) {
-        println!("default filter");
+        filters.push(Box::new(file));
+    }
+
+    pub fn clear_filters() {
+        let mut filters = FILTER.lock().unwrap();
+
+        filters.clear();
+    }
+
+    pub fn apply_filters<T>(request: Box<T>)
+    where
+        T: Any + Clone,
+    {
+        let filters = FILTER.lock().unwrap();
+
+        for filter in filters.iter() {
+            filter.accept(request.clone());
+        }
+    }
+
+    pub fn new() -> Self {
+        Self
     }
 }

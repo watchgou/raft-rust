@@ -12,3 +12,4 @@ serde_yaml = { workspace = true }
 log = { workspace = true }
 serde_json = { workspace = true }
 derive_builder = { workspace = true }
+once_cell = "1.21.3"

@@ -48,7 +48,7 @@ pub async fn start() -> Result<(), Box<dyn std::error::Error>> {
     let millis = rand::thread_rng().gen_range(2000..=5000) as u64;
     conf.out_time(millis);
     // 初始化 过滤器
-    filter::FilterChain::init();
+    filter::FilterManager::new();
     let (tx, rx) = mpsc::channel::<String>(5);
 
     let task = tokio::spawn(async_task(rx));
