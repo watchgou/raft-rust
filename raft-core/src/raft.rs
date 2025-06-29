@@ -1,4 +1,4 @@
-use std::sync::{Arc, Mutex};
+use std::sync::Mutex;
 
 use crate::{server::rpc_server::vote_server, RaftConfig};
 
@@ -7,7 +7,7 @@ use raft_common::raft_log::log::LogModule;
 
 use tokio::sync::mpsc::Sender;
 
-static mut STATE: Lazy<Mutex<State>> = Lazy::new(|| Mutex::new(State::Follower));
+static STATE: Lazy<Mutex<State>> = Lazy::new(|| Mutex::new(State::Follower));
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub(crate) enum State {

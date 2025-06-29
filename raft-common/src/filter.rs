@@ -3,7 +3,7 @@ use std::any::Any;
 use std::sync::Mutex;
 
 pub trait Filter: Send + Sync {
-    fn accept(&self, request: Box<dyn Any>);
+    fn accept(&self, request: &dyn Any);
 }
 
 #[derive(Default)]
@@ -29,14 +29,10 @@ impl FilterManager {
         filters.clear();
     }
 
-    pub fn apply_filters<T>(request: Box<T>)
-    where
-        T: Any + Clone,
-    {
+    pub fn apply_filters(&self, request: &dyn Any) {
         let filters = FILTER.lock().unwrap();
-
         for filter in filters.iter() {
-            filter.accept(request.clone());
+            filter.accept(request);
         }
     }
 
